@@ -21,6 +21,9 @@ app.get("/", (req, res) => {
 // Auth Routes
 app.use("/api/auth", require("./routes/authRoutes"));
 
+// Car Routes
+app.use("/api/car", require("./routes/carRoutes"));
+
 // Error Handler
 app.use(errorHandler);
 
