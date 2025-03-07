@@ -14,4 +14,6 @@ router.post("/", protect, addCar);
 router.get("/:id", protect, getCar);
 router.put("/:id", protect, updateCar);
 
+router.use("/:id/comment", require("./commentRoutes"));
+
 module.exports = router;

@@ -1,5 +1,4 @@
 const expressAsyncHandler = require("express-async-handler");
-const User = require("../models/userModel");
 const Car = require("../models/carModel");
 
 const addCar = expressAsyncHandler(async (req, res) => {
@@ -27,6 +26,14 @@ const addCar = expressAsyncHandler(async (req, res) => {
 });
 
 const updateCar = expressAsyncHandler(async (req, res) => {
+  const car = await Car.findById(req.params.id);
+
+  //   Check if user is valid
+  if (req.user._id !== car.user) {
+    res.status(401);
+    throw new Error("Invalid Request");
+  }
+
   const updatedCar = await Car.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });

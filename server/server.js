@@ -24,6 +24,9 @@ app.use("/api/auth", require("./routes/authRoutes"));
 // Car Routes
 app.use("/api/car", require("./routes/carRoutes"));
 
+// Admin Routes
+app.use("/api/admin", require("./routes/adminRoutes"));
+
 // Error Handler
 app.use(errorHandler);
 
