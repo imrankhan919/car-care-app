@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -15,18 +16,18 @@ const HeroSection = () => {
             state-of-the-art facilities.
           </p>
           <div className="flex justify-center gap-4">
-            <a
-              href="#book"
+            <Link
+              to="/car/raise-complaint"
               className="text-white px-6 py-3 rounded-xl hover:bg-opacity-90 transition-all duration-300 font-medium bg-blue-500"
             >
               Raise Complaint
-            </a>
-            <a
-              href="#services"
-              className="bg-white text-primary border-2 border-primary px-6 py-3 rounded-xl hover:bg-primary hover:text-white transition-all duration-300 font-medium bg-gray-400"
+            </Link>
+            <Link
+              to="/car/all-complaints"
+              className="bg-white text-primary border-2 border-primary px-6 py-3 rounded-xl hover:bg-blue-600 hover:text-white transition-all duration-300 font-medium bg-gray-400"
             >
               All Complaints
-            </a>
+            </Link>
           </div>
         </div>
       </div>

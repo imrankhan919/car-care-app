@@ -1,6 +1,9 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const RaiseComplaint = () => {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <div class="min-h-screen flex items-center justify-center p-4">
       <div class="bg-white p-8 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.05)] hover:shadow-[0_0_50px_rgba(0,0,0,0.1)] transition-all duration-300 w-full max-w-2xl">
@@ -17,18 +20,22 @@ const RaiseComplaint = () => {
               Full Name
             </label>
             <input
+              value={user?.name}
               type="text"
-              class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300"
+              class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 disabled:bg-gray-200"
               placeholder="John Doe"
+              disabled
             />
           </div>
 
           <div>
             <label class="block text-gray-700 font-medium mb-2">Email</label>
             <input
+              value={user?.email}
               type="email"
-              class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300"
+              class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 disabled:bg-gray-200"
               placeholder="name@example.com"
+              disabled
             />
           </div>
 

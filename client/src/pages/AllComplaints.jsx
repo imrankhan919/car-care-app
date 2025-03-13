@@ -1,6 +1,29 @@
-import React from "react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { getComplaints } from "../features/complaints/complaintSlice";
+import CarLoadingScreen from "../components/CarLoadingScreen";
 
 const AllComplaints = () => {
+  const { isLoading, isError, message, allComplaints } = useSelector(
+    (state) => state.complaint
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getComplaints());
+
+    if (isError && message) {
+      toast.error(message);
+    }
+  }, [isError, message]);
+
+  if (isLoading) {
+    return <CarLoadingScreen />;
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="bg-white rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.05)] overflow-hidden">
@@ -34,54 +57,38 @@ const AllComplaints = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-gray-100">
-                  <td className="py-4 px-4 text-gray-700">1</td>
-                  <td className="py-4 px-4 text-gray-700">2024-02-15</td>
-                  <td className="py-4 px-4 text-gray-700">Toyota Camry</td>
-                  <td className="py-4 px-4 text-gray-700">ABC-123</td>
-                  <td className="py-4 px-4">
-                    <span className="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">
-                      Pending
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <button className="text-blue-500 hover:text-blue-700 font-medium">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="py-4 px-4 text-gray-700">2</td>
-                  <td className="py-4 px-4 text-gray-700">2024-02-10</td>
-                  <td className="py-4 px-4 text-gray-700">Honda Civic</td>
-                  <td className="py-4 px-4 text-gray-700">XYZ-789</td>
-                  <td className="py-4 px-4">
-                    <span className="px-3 py-1 text-sm rounded-full bg-green-100 text-green-800">
-                      Closed
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <button className="text-blue-500 hover:text-blue-700 font-medium">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="py-4 px-4 text-gray-700">3</td>
-                  <td className="py-4 px-4 text-gray-700">2024-02-05</td>
-                  <td className="py-4 px-4 text-gray-700">BMW 3 Series</td>
-                  <td className="py-4 px-4 text-gray-700">DEF-456</td>
-                  <td className="py-4 px-4">
-                    <span className="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-800">
-                      Open
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-right">
-                    <button className="text-blue-500 hover:text-blue-700 font-medium">
-                      View Details
-                    </button>
-                  </td>
-                </tr>
+                {allComplaints.map((complaint) => {
+                  return (
+                    <tr
+                      key={complaint._id}
+                      className="border-b border-gray-100"
+                    >
+                      <td className="py-4 px-4 text-gray-700">1</td>
+                      <td className="py-4 px-4 text-gray-700">
+                        {complaint.createdAt}
+                      </td>
+                      <td className="py-4 px-4 text-gray-700">
+                        {complaint.car}
+                      </td>
+                      <td className="py-4 px-4 text-gray-700">
+                        {complaint.registration}
+                      </td>
+                      <td className="py-4 px-4">
+                        <span className="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">
+                          {complaint.status}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-right">
+                        <Link
+                          to={`/car/complaint/${complaint._id}`}
+                          className="text-blue-500 hover:text-blue-700 font-medium"
+                        >
+                          View Details
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

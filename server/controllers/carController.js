@@ -48,8 +48,8 @@ const updateCar = expressAsyncHandler(async (req, res) => {
 const getCar = expressAsyncHandler(async (req, res) => {
   const car = await Car.findById(req.params.id);
 
-  //   Check if user is valid
-  if (req.user._id !== car.user) {
+  // Check if user is valid
+  if (car.user.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("Invalid Request");
   }
