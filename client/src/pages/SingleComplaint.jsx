@@ -1,36 +1,51 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCar, FaCheckCircle } from "react-icons/fa";
 import { BiMessageSquare } from "react-icons/bi";
 import { IoMdAlert, IoMdSend } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { getComplaint } from "../features/complaints/complaintSlice";
+import {
+  closeComplaint,
+  getComplaint,
+} from "../features/complaints/complaintSlice";
 import CarLoadingScreen from "../components/CarLoadingScreen";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { addComment, getComments } from "../features/comments/commentSlice";
 
 function SingleComplaint() {
-  const comments = [
-    {
-      author: "Service Advisor",
-      message: "Initial inspection scheduled for tomorrow at 10 AM.",
-      timestamp: "2024-03-15 09:30",
-    },
-    {
-      author: "Customer",
-      message: "Thank you, I will bring the car as scheduled.",
-      timestamp: "2024-03-15 10:15",
-    },
-  ];
+  const [text, setText] = useState("");
+
+  const { user } = useSelector((state) => state.auth);
 
   const { isLoading, isError, message, singleComplaint } = useSelector(
     (state) => state.complaint
   );
 
+  const { comments } = useSelector((state) => state.comment);
+
   const dispatch = useDispatch();
   const { id } = useParams();
 
+  const handleCloseComplaint = (id) => {
+    dispatch(closeComplaint(id));
+  };
+
+  // Handle Add Comment
+  const handleAddComment = (e) => {
+    e.preventDefault();
+    dispatch(
+      addComment({
+        id: id,
+        text: text,
+      })
+    );
+
+    setText("");
+  };
+
   useEffect(() => {
     dispatch(getComplaint(id));
+    dispatch(getComments(id));
     if (isError && message) {
       toast.error(message);
     }
@@ -46,15 +61,15 @@ function SingleComplaint() {
         {/* Header with Car Icon */}
         <div className="flex items-center space-x-3">
           <FaCar className="w-8 h-8 text-blue-500" />
-          <h1 className="text-2xl font-semibold text-gray-800">
-            {singleComplaint.car.toUpperCase()}
+          <h1 className="text-2xl font-semibold text-gray-800 uppercase">
+            {singleComplaint?.car}
           </h1>
         </div>
 
         {/* Car Image */}
         <div className="aspect-video rounded-lg overflow-hidden">
           <img
-            src={singleComplaint.carImage}
+            src={singleComplaint?.carImage}
             alt="Tesla Model 3"
             className="w-full h-full object-cover"
           />
@@ -66,8 +81,8 @@ function SingleComplaint() {
             <h2 className="text-sm font-medium text-gray-500">
               Registration Number
             </h2>
-            <p className="text-lg font-semibold text-gray-800">
-              {singleComplaint.registration.toUpperCase()}
+            <p className="text-lg font-semibold text-gray-800 uppercase">
+              {singleComplaint.registration}
             </p>
           </div>
 
@@ -108,21 +123,21 @@ function SingleComplaint() {
             {comments.map((comment, index) => (
               <div key={index} className="bg-gray-50 rounded-lg p-3">
                 <div className="flex justify-between items-start mb-1">
-                  <span className="font-medium text-gray-800">
-                    {comment.author}
-                  </span>
+                  <span className="font-medium text-gray-800">{user.name}</span>
                   <span className="text-xs text-gray-500">
-                    {comment.timestamp}
+                    {comment.createdAt}
                   </span>
                 </div>
-                <p className="text-gray-700">{comment.message}</p>
+                <p className="text-gray-700">{comment.text}</p>
               </div>
             ))}
           </div>
 
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+          <form onSubmit={handleAddComment} className="space-y-4">
             <div className="flex space-x-2">
               <input
+                value={text}
+                onChange={(e) => setText(e.target.value)}
                 type="text"
                 placeholder="Add a comment..."
                 className="flex-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -139,7 +154,10 @@ function SingleComplaint() {
 
         {/* Close Complaint Button */}
         {singleComplaint.status === "pending" && (
-          <button className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center space-x-2">
+          <button
+            onClick={() => handleCloseComplaint(singleComplaint._id)}
+            className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+          >
             <FaCheckCircle className="w-5 h-5" />
             <span>Close Complaint</span>
           </button>
